@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - ProjectHub</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Alpine.js -->
+    <script src="https://unpkg.com/alpinejs" defer></script>
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="bg-gray-50 flex items-center justify-center min-h-screen">
+    <div class="bg-white rounded-lg shadow-lg p-8 max-w-4xl w-full" x-data="{ editing: false, editingSkills: false, editingProjects: false, skills: ['JavaScript', 'React', 'Node.js', 'Python', 'CSS'], projects: [{ name: 'Project One', link: '#' }, { name: 'Project Two', link: '#' }, { name: 'Project Three', link: '#' }] }">
+        <h2 class="text-2xl font-bold text-center text-indigo-600 mb-6">User  Profile</h2>
+        
+        <!-- Profile Picture -->
+        <div class="flex items-center mb-6">
+            <img src="https://via.placeholder.com/100" alt="Profile Picture" class="rounded-full border-2 border-indigo-600">
+            <div class="ml-4">
+                <h3 class="text-xl font-semibold" id="userName">John Doe</h3>
+                <p class="text-gray-600" id="userTitle">Software Engineer</p>
+            </div>
+        </div>
+
+        <!-- User Information -->
+        <div x-show="!editing" class="mb-4">
+            <p class="text-lg font-semibold">Email: <span id="userEmail">john.doe@example.com</span></p>
+            <p class="text-lg font-semibold">Location: <span id="userLocation">San Francisco, CA</span></p>
+            <p class="text-lg font-semibold">Bio: <span id="userBio">Passionate software engineer with 5+ years of experience in web development.</span></p>
+            <button @click="editing = true" class="mt-4 w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition duration-200">
+                Edit Profile
+            </button>
+        </div>
+
+        <!-- Edit Profile Form -->
+        <div x-show="editing" class="mb-4">
+            <form id="profileForm" @submit.prevent="editing = false">
+                <div class="mb-4">
+                    <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+                    <input type="text" id="name" value="John Doe" required
+                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                </div>
+                <div class="mb-4">
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                    <input type="email" id="email" value="john.doe@example.com" required
+                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                </div>
+                <div class="mb-4">
+                    <label for="location" class="block text-sm font-medium text-gray-700">Location</label>
+                    <input type="text" id="location" value="San Francisco, CA" required
+                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                </div>
+                <div class="mb-4">
+                    <label for="bio" class="block text-sm font-medium text-gray-700">Bio</label>
+                    <textarea id="bio" rows="3" required
+                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">Passionate software engineer with 5+ years of experience in web development.</textarea>
+                </div>
+                <button type="submit" class="w-full bg-indigo- 600 text-white py-2 rounded-lg hover:bg-indigo-700 transition duration-200">
+                    Save Changes
+                </button>
+                <button @click="editing = false" type="button" class="mt-2 w-full bg-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-400 transition duration-200">
+                    Cancel
+                </button>
+            </form>
+        </div>
+
+        <!-- Skills Section -->
+        <div class="mt-6">
+            <h3 class="text-lg font-semibold mb-2">Skills</h3>
+            <div x-show="!editingSkills">
+                <ul class="list-disc list-inside">
+                    <template x-for="(skill, index) in skills" :key="index">
+                        <li x-text="skill">
+                            <button @click="editingSkills = true" class="text-red-500 ml-2">Remove</button>
+                        </li>
+                    </template>
+                </ul>
+                <button @click="editingSkills = true" class="mt-4 w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition duration-200">
+                    Edit Skills
+                </button>
+            </div>
+
+            <div x-show="editingSkills">
+                <form @submit.prevent="editingSkills = false">
+                    <template x-for="(skill, index) in skills" :key="index">
+                        <div class="mb-2 flex items-center">
+                            <input type="text" x-model="skills[index]" required
+                                class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            <button @click.prevent="skills.splice(index, 1)" class="text-red-500 ml-2">Remove</button>
+                        </div>
+                    </template>
+                    <div class="mb-2 flex items-center">
+                        <input type="text" x-model="newSkill" placeholder="Add new skill" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                        <button @click.prevent="skills.push(newSkill); newSkill=''" class="mt-2 bg-green-600 text-white py-1 px-2 rounded-lg hover:bg-green-700 transition duration-200">
+                            Add Skill
+                        </button>
+                    </div>
+                    <div class="flex justify-between mt-2">
+                        <button type="submit" class="bg-indigo-600 text-white py-1 px-2 rounded-lg hover:bg-indigo-700 transition duration-200">
+                            Save Skills
+                        </button>
+                        <button @click="editingSkills = false" type="button" class="bg-gray-300 text-gray-700 py-1 px-2 rounded-lg hover:bg-gray-400 transition duration-200">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Projects Section -->
+        <div class="mt-6">
+            <h3 class="text-lg font-semibold mb-2">Projects</h3>
+            <div x-show="!editingProjects">
+                <ul class="list-disc list-inside">
+                    <template x-for="(project, index) in projects" :key="index">
+                        <li>
+                            <a :href="project.link" class="text-indigo-600 hover:underline" x-text="project.name"></a> - A brief description of the project.
+                            <button @click="editingProjects = true" class="text-red-500 ml-2">Remove</button>
+                        </li>
+                    </template>
+                </ul>
+                <button @click="editingProjects = true" class="mt-4 w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition duration-200">
+                    Edit Projects
+                </button>
+            </div>
+
+            <div x-show="editingProjects">
+                <form @submit.prevent="editingProjects = false">
+                    <template x-for="(project, index) in projects" :key="index">
+                        <div class="mb-2">
+                            <input type="text" x-model="projects[index].name" placeholder="Project Name" required
+                                class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            <input type="url" x-model="projects[index].link" placeholder="Project Link" required
+                                class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            <button @ click.prevent="projects.splice(index, 1)" class="text-red-500 ml-2">Remove</button>
+                        </div>
+                    </template>
+                    <div class="mb-2 flex items-center">
+                        <input type="text" x-model="newProjectName" placeholder="New Project Name" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                        <input type="url" x-model="newProjectLink" placeholder="New Project Link" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                        <button @click.prevent="projects.push({ name: newProjectName, link: newProjectLink }); newProjectName=''; newProjectLink=''" class="mt-2 bg-green-600 text-white py-1 px-2 rounded-lg hover:bg-green-700 transition duration-200">
+                            Add Project
+                        </button>
+                    </div>
+                    <div class="flex justify-between mt-2">
+                        <button type="submit" class="bg-indigo-600 text-white py-1 px-2 rounded-lg hover:bg-indigo-700 transition duration-200">
+                            Save Projects
+                        </button>
+                        <button @click="editingProjects = false" type="button" class="bg-gray-300 text-gray-700 py-1 px-2 rounded-lg hover:bg-gray-400 transition duration-200">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

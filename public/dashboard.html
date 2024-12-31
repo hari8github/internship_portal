@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - ProjectHub</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js for graphical representation -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        [x-cloak] { display: none !important; }
+        .chart-container {
+            position: relative;
+            height: 250px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <h2 class="text-2xl font-bold text-indigo-600 mb-6">Dashboard</h2>
+
+        <!-- Overview Section -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white p-4 rounded-lg shadow">
+                <h3 class="text-lg font-semibold">Total Projects</h3>
+                <p id="totalProjects" class="text-2xl">0</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow">
+                <h3 class="text-lg font-semibold">Completed Projects</h3>
+                <p id="completedProjects" class="text-2xl">0</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow">
+                <h3 class="text-lg font-semibold">Active Projects</h3>
+                <p id="activeProjects" class="text-2xl">0</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow">
+                <h3 class="text-lg font-semibold">Total Hours Worked</h3>
+                <p id="totalHours" class="text-2xl">0</p>
+            </div>
+        </div>
+
+        <!-- Graphical Representation Section -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <!-- Project Status Chart -->
+            <div class="bg-white p-4 rounded-lg shadow">
+                <h3 class="text-lg font-semibold mb-4">Project Status Overview</h3>
+                <div class="chart-container">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Hours Worked Chart -->
+            <div class="bg-white p-4 rounded-lg shadow">
+                <h3 class="text-lg font-semibold mb-4">Hours Worked by Project</h3>
+                <div class="chart-container">
+                    <canvas id="hoursChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Project List Section -->
+        <h3 class="text-lg font-semibold mb-4">Projects</h3>
+        <div id="projectList" class="bg-white p-4 rounded-lg shadow mb-8">
+            <!-- Project items will be dynamically inserted here -->
+        </div>
+
+        <!-- Action Buttons -->
+
+    </div>
+
+    <script>
+        // Sample project data
+        const projectData = {
+            projects: [
+                { title: 'E-commerce Platform Redesign', status: 'completed', hoursWorked: 120, team: ['Alice', 'Bob'], tags: ['design', 'e-commerce'] },
+                { title: 'Mobile App Development', status: 'active', hoursWorked: 80, team: ['Charlie', 'David'], tags: ['development', 'mobile'] },
+                { title: 'SEO Optimization', status: 'completed', hoursWorked: 40, team: ['Eve'], tags: ['marketing', 'SEO'] }
+            ]
+        };
+
+        // Function to populate the dashboard with project data
+        function populateDashboard() {
+            const totalProjects = projectData.projects.length;
+            const completedProjects = projectData.projects.filter(p => p.status === 'completed').length;
+            const activeProjects = projectData.projects.filter(p => p.status === 'active').length;
+            const totalHours = projectData.projects.reduce((sum, p) => sum + p.hoursWorked, 0);
+
+            document.getElementById('totalProjects').innerText = totalProjects;
+            document.getElementById('completedProjects').innerText = completedProjects;
+            document.getElementById('activeProjects').innerText = activeProjects;
+            document.getElementById('totalHours').innerText = totalHours;
+
+            const projectList = document.getElementById('projectList');
+            projectData.projects.forEach(project => {
+    const projectItem = document.createElement('div');
+    projectItem.className = 'border-b py-2';
+    projectItem.innerHTML = `
+        <h4 class="font-semibold">${project.title}</h4>
+        <p>Status: ${project.status}</p>
+        <p>Hours Worked: ${project.hoursWorked}</p>
+        <p>Team: ${project.team.join(', ')}</p>
+        <p>Tags: ${project.tags.join(', ')}</p>
+    `;
+
+    // Add a dummy button for completed projects
+    if (project.status === 'completed') {
+        const button = document.createElement('button');
+        button.innerText = 'Download Certificate';
+        button.className = 'mt-2 bg-blue-500 text-white py-1 px-4 rounded';
+        button.onclick = () => alert(`Viewing details for ${project.title}`);
+        projectItem.appendChild(button);
+    }
+
+    projectList.appendChild(projectItem);
+});
+
+            // Chart.js for graphical representation
+            const statusChartCtx = document.getElementById('statusChart').getContext('2d');
+            const hoursChartCtx = document.getElementById('hoursChart').getContext('2d');
+
+            // Status Pie Chart
+            new Chart(statusChartCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Completed', 'Active'],
+                    datasets: [{
+                        data: [completedProjects, activeProjects],
+                        backgroundColor: ['#4CAF50', '#FF9800'],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            });
+
+            // Hours Worked Bar Chart
+            new Chart(hoursChartCtx, {
+                type: 'bar',
+                data: {
+                    labels: projectData.projects.map(p => p.title),
+                    datasets: [{
+                        label: 'Hours Worked',
+                        data: projectData.projects.map(p => p.hoursWorked),
+                        backgroundColor: '#2196F3',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    },
+                    legend: {
+                        display: false
+                    }
+                }
+            });
+        }
+
+        // Call the function to populate the dashboard on page load
+        window.onload = populateDashboard;
+
+    </script>
+</body>
+</html>

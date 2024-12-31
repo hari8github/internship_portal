@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProjectHub - Modern Project Management</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Alpine.js -->
+    <script src="https://unpkg.com/alpinejs" defer></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Custom Styles -->
+    <style>
+        [x-cloak] { display: none !important; }
+        .project-card { transition: transform 0.2s ease-in-out; }
+        .project-card:hover { transform: translateY(-5px); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+            animation: fadeIn 0.2s ease-out forwards;
+        }
+
+        /* Dropdown positioning and shadows */
+        #accountMenu {
+            z-index: 1000;
+            width: 256px;
+            right: 0;
+            margin-top: 8px;
+        }
+
+        /* Hover effects for menu items */
+        #accountMenu a:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div id="app">
+        <!-- Header -->
+        <header class="bg-white shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <a href="index.html" h1 class="text-2xl font-bold text-indigo-600">ProjectHub</h1></a>
+                        </div>
+                    </div>
+
+                    <!-- Desktop Navigation -->
+                    <div class="hidden md:flex items-center space-x-4">
+                        <div class="relative">
+                            <input
+                                type="text"
+                                id="searchInput"
+                                placeholder="Search projects..."
+                                class="w-64 px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                            >
+                            <i class="fas fa-search absolute right-3 top-3 text-gray-400"></i>
+                        </div>
+
+                        <a href="forum.html" class="px-3 py-2 rounded-lg hover:bg-gray-100 transition duration-200 flex items-center">
+                            <i class="fas fa-comments text-gray-500 mr-2"></i>
+                            <span class="text-gray-700">Forum</span>
+                        </a>
+                    
+                        <button class="p-2 rounded-full hover:bg-gray-100">
+                            <i class="fas fa-bell text-gray-500"></i>
+                        </button>
+
+                        <!-- Dropdown Integration -->
+                        <div class="relative" id="accountDropdown">
+                            <button class="p-2 rounded-full hover:bg-gray-100" id="accountButton">
+                                <i class="fas fa-user text-gray-500"></i>
+                            </button>
+                            <!-- Dropdown Menu -->
+                            <div id="accountMenu" class="hidden absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg py-2 border border-gray-200">
+                                <!-- User Info Section -->
+                                <div class="px-4 py-3 border-b border-gray-200">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center">
+                                            <span class="text-white font-semibold text-lg">JD</span>
+                                        </div>
+                                        <div>
+                                            <div class="font-semibold text-gray-800">John Doe</div>
+                                            <div class="text-sm text-gray-500">john.doe@example.com</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Menu Items -->
+                                <div class="py-1">
+                                    <a href="profile.html" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                                        <i class="fas fa-user-circle mr-2"></i> My Profile
+                                    </a>
+                                    <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                                        <i class="fas fa-cog mr-2"></i> Settings
+                                    </a>
+                                    <a href="dashboard.html" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                                        <i class="fas fa-chart-bar mr-2"></i> Dashboard
+                                    </a>
+                                    <div class="border-t border-gray-200 mt-2 pt-2">
+                                        <a href="login.html" id="logoutButton" class="block px-4 py-2 text-red-600 hover:bg-gray-100">
+                                            <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mobile menu button -->
+                    <div class="md:hidden">
+                        <button
+                            id="mobileMenuButton"
+                            class="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+                        >
+                            <i class="fas fa-bars"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div id="projectGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Projects will be dynamically inserted here -->
+            </div>
+        </main>
+        <div id="projectDetailsModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+            <div class="bg-white rounded-lg shadow-lg p-6 w-11/12 md:w-3/4 max-h-[90vh] overflow-y-auto">
+                <!-- Content will be dynamically inserted here -->
+            </div>
+        </div>
+    <!-- Include JavaScript -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const accountButton = document.getElementById("accountButton");
+            const accountMenu = document.getElementById("accountMenu");
+
+            accountButton.addEventListener("click", () => {
+                accountMenu.classList.toggle("hidden");
+            });
+
+            document.addEventListener("click", (event) => {
+                if (!accountButton.contains(event.target) && !accountMenu.contains(event.target)) {
+                    accountMenu.classList.add("hidden");
+                }
+            });
+        });
+    </script>
+
+<script src="data.js"></script>
+<script src="script.js"></script>
+<script src="additional_data.js"></script>
+</body>
+</html>
