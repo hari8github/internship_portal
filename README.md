@@ -71,13 +71,15 @@ Streamline your team collaboration, task management, and project tracking effort
 - **Frontend**: HTML, Tailwind CSS, and Alpine.js
 - **Database**: MongoDB
 
+- **(If you want use any tech stack suitable to you)**
+
 ---
 
 ## 🚀 Installation
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/your-username/project-hub.git
+   git clone https://github.com/hari8github/project-hub.git
    ```
 
 2. **Install Dependencies**:
