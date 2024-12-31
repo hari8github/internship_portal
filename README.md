@@ -93,7 +93,7 @@ Streamline your team collaboration, task management, and project tracking effort
    ```
 
 4. **Access the Application**:  
-   Open your browser and navigate to [http://localhost:3000](http://localhost:3000).
+   Open your browser and navigate to [http://localhost:3000](http://localhost:3002).
 
 ---
 
